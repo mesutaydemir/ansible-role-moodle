@@ -1,4 +1,14 @@
 ---
+- name: Apt Update
+  hosts: all
+  become: True
+
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+
 - name: prepare
   hosts: all
   become: yes
