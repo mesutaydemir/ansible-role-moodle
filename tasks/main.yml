@@ -39,7 +39,7 @@
     dest: "{{ moodle_httpd_data_directory }}/moodle/config.php"
     owner: "{{ moodle_httpd_owner }}"
     group: "{{ moodle_httpd_group }}"
-    mode: "0640"
+    mode: "0644"
 
 - name: Setup cron job
   ansible.builtin.cron:
