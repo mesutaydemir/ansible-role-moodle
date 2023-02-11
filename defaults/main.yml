@@ -11,7 +11,7 @@ moodle_data_directory: /opt/moodledata
 moodle_directory_mode: "0750"
 
 # Details to connect to the database.
-moodle_database_type: mysqli
+moodle_database_type: mariadb
 moodle_database_hostname: localhost
 moodle_database_name: moodle
 moodle_database_username: moodle
