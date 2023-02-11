@@ -1,10 +1,10 @@
+# Create control and host machines. All machines will be Ubuntu 22.04 with 1GB Ram, 2 Core CPUs and 40 GB Disk.
+## [Vagrant Installation] (https://github.com/mesutaydemir/ansible/blob/main/README.md#vagrant-kurulumu)
+
 # [moodle](#moodle)
 
 Install and configure moodle on your system.
 
-|GitHub|GitLab|Quality|Downloads|Version|Issues|Pull Requests|
-|------|------|-------|---------|-------|------|-------------|
-|[![github](https://github.com/buluma/ansible-role-moodle/workflows/Ansible%20Molecule/badge.svg)](https://github.com/buluma/ansible-role-moodle/actions)|[![gitlab](https://gitlab.com/buluma/ansible-role-moodle/badges/master/pipeline.svg)](https://gitlab.com/buluma/ansible-role-moodle)|[![quality](https://img.shields.io/ansible/quality/55981)](https://galaxy.ansible.com/buluma/moodle)|[![downloads](https://img.shields.io/ansible/role/d/55981)](https://galaxy.ansible.com/buluma/moodle)|[![Version](https://img.shields.io/github/release/buluma/ansible-role-moodle.svg)](https://github.com/buluma/ansible-role-moodle/releases/)|[![Issues](https://img.shields.io/github/issues/buluma/ansible-role-moodle.svg)](https://github.com/buluma/ansible-role-moodle/issues/)|[![PullRequests](https://img.shields.io/github/issues-pr-closed-raw/buluma/ansible-role-moodle.svg)](https://github.com/buluma/ansible-role-moodle/pulls/)|
 
 ## [Example Playbook](#example-playbook)
 
