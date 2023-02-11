@@ -1,5 +1,5 @@
 # Create control and host machines. All machines will be Ubuntu 22.04 with 1GB Ram, 2 Core CPUs and 40 GB Disk.
-## [Vagrant Installation] (#Vagrant Kurulumu)
+## [Vagrant Installation] (#vagrant-kurulumu)
 
 # [moodle](#moodle)
 
