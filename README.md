@@ -1,5 +1,5 @@
 # Create control and host machines. All machines will be Ubuntu 22.04 with 1GB Ram, 2 Core CPUs and 40 GB Disk.
-## [Vagrant Installation] (https://github.com/mesutaydemir/ansible/blob/main/README.md#vagrant-kurulumu)
+## [Vagrant Installation] (#Vagrant Kurulumu)
 
 # [moodle](#moodle)
 
