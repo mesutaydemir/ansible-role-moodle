@@ -48,6 +48,7 @@ moodle_requirements: "{{ _moodle_requirements[ansible_os_family ~ '-' ~ ansible_
 
 moodle_src: "https://download.moodle.org/download.php/direct/stable{{ moodle_version }}/moodle-latest-{{ moodle_version }}.zip"
 
+
 _moodle_httpd_data_directory:
   default: /var/www/html
   Alpine: /var/www/{{ httpd_servername | default(ansible_fqdn) }}
