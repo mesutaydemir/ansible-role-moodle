@@ -5,8 +5,152 @@ In our Ubuntu machine (not the control node), run the following commands to inst
 sudo apt install vagrant
 vagrant --v
 ```
+### Vagrant Komutları
+```ruby
+vagrant status ==> tüm makinelerin durumunu kontrol etmek için kullanılır.
+vagrant box list
+vagrant up ==> Vagrant dosyasındaki verilere göre makineleri oluşturur.
+vagrant destroy -f ==> tüm makineleri silmek için kullanılır.
+vagrant --help
+vagrant ssh ==> Varsayılan olarak kontrol makinesine bağlanır.
+vagrant box --help
+vagrant suspend ==> tüm makineleri uyku moduna alır.
+vagrant resume ==> tüm makineleri uyku modundan çıkarıp başlatır.
+vagrant init ubuntu/focal64 --box-version 20230119.0.0 ==> vagrant makinesini up etmeden önce oluşturulan vagrant dosyası
+```
+## Ansible kurulumu
+- Öncelikle `vagrant ssh` komutu ile kontrol makinresine bağlantı yapıyoruz
+- yazılım reposunu güncelleyip python3 virtual environment paketini *python3-venv* kurmayabiliriz :) çünkü yukarıdaki Vagrant Dosyasında (provisioning file) var:
 
-# [moodle](#moodle)
+```
+sudo apt update
+sudo apt install python3-venv -y
+```
+
+- Ev dizinimizin altında merkezi bir dosya altında yapılandırma dosyalarını oluşturuyoruz:
+```
+python3 -m venv ~/.venv/kamp
+```
+python3'ün path'ini belirtmek için aşağıdaki komutu çalıştırıyoruz:
+```
+source ~/.venv/kamp/bin/activate
+```
+
+- Bu komutu etkisizleştirmek için: 
+```
+deactivate
+```
+`which python3` komutu ile */usr/bin/python3* görülecektir. `source ~/.venv/kamp/bin/activate` komutundan sonra *venv* altındaki python3 
+```
+pip3 install --upgrade pip # pip3 paketini güncelliyoruz.
+```
+### Dependancy management
+- pythonda kullanılacak kütüphaneleri tanımlamak için *requirements.txt* dosyasını /home/vagrant altında oluşturuyoruz:
+```
+nano requirements.txt
+```
+- Dosyanın içine aşağıdaki satrıları ekledikten sonra kaydedip çıkıyoruz:
+```ruby
+ansible==6.7.0
+ansible-core==2.13.7
+cffi==1.15.1
+cryptography==39.0.0
+Jinja2==3.1.2
+MarkupSafe==2.1.2
+packaging==23.0
+pkg_resources==0.0.0
+pycparser==2.21
+PyYAML==6.0
+resolvelib==0.8.1
+```
+- Aşağıdaki komutlar ile önce pip'i upgrade ediyoruz. Sonra *requirements.txt* içinde belirtilen python kütüphanelerini (versiyonlarında belirtildiği şekilde) güncelliyoruz. 
+
+>Not: Kütüphanelerin versiyonları güvenlik güncellemeleri ve buglardan dolayı ara sıra güncellenerek kontrol edilmeli.
+
+`pip3 freeze` requirements.txt dosyasındaki kütüphaneleri listelemek için
+
+`pip3 install -r requirements.txt` **declarative**
+`pip3 install ansible` yazarak da kurabilirdim **imperative**
+
+- hosts dosyasını oluşturuyoruz. Yöneteceğimiz makineleri bu dosyada tanımlıyoruz.
+```
+nano hosts
+```
+- Oluşturduğumuz host dosyasının içeriği aşağıdaki gibi:
+```ruby
+host0 ansible_host=192.168.56.20
+host1 ansible_host=192.168.56.21
+host2 ansible_host=192.168.56.22
+
+[all:vars]
+ansible_user=vagrant
+ansible_password=vagrant
+```
+> NOT! ansible `sudo apt install ansible` komutu ile kurulmuyorsa `hosts`,`ansible.cfg` ve `playbook.yml` dosyaları aynı dizinde olmalı.
+## Ad-hoc 
+Bu komutlar ile önce bağlantıyı kontrol edeceğiz:
+
+- Kontrol makinesinde yönetilen makinelere bağlantı yapılabildiğini doğrulayalım:
+
+```
+ansible all -i hosts -m ping --ssh-common-args='-o StrictHostKeyChecking=no'
+```
+
+- Alternatif olarak bu klasörde *ansible.cfg* dosyasını oluşturup aşağıdaki satırları ekledikten sonra:
+```
+[defaults]
+host_key_checking = False
+inventory = hosts
+```
+aşağıdaki komutu çalıştırabiliriz:
+```
+ansible all -i hosts -m ping 
+```
+## Ansible Galaxy ile moodle rolünün çekilmesi
+> Ansible galaxy koleksiyonlarına https://galaxy.ansible.com adresinden erişilebilir. `ansible-galaxy install buluma.moodle` komutu çalıştırıldığında koleksiyon dosyaları `/home/vagrant/.ansible/roles/buluma.moodle` dizinine kopyalanır. Hnagi komut ve rol adının kullanılacağı koleksiyonda yer alan *Details* ve *ReadMe* sekmelerinden erişilmelidir.
+
+> `ansible-galaxy search paket_adı --author yazar_adi` komutu ile belirli bir yazar tarafından yazılmış ansible-galaxy şablonu aratılabilir.
+- Komut sonrası oluşturulan dosya/klasörlerin açıklamalarına (https://danuka-praneeth.medium.com/ansible-roles-and-ansible-galaxy-b224f4693cd4) erişilebilir. Şimdi `ansible-galaxy install buluma.moodle` komutu sonrası oluşan dizin ağacı aşağıdaki gibidir:
+```ruby
+vagrant@control:~/.ansible/roles/buluma.moodle$ tree
+.
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── SECURITY.md
+├── defaults
+│   └── main.yml
+├── meta
+│   ├── argument_specs.yml
+│   ├── main.yml
+│   └── preferences.yml
+├── molecule
+│   └── default
+│       ├── ansible.cfg
+│       ├── apt_update.yml
+│       ├── converge.yml
+│       ├── hosts
+│       ├── molecule.yml
+│       ├── php.yml
+│       ├── prepare.yml
+│       └── verify.yml
+├── requirements.txt
+├── requirements.yml
+├── tasks
+│   ├── assert.yml
+│   └── main.yml
+├── templates
+│   └── config.php.j2
+├── tox.ini
+└── vars
+    └── main.yml
+
+7 directories, 25 files
+``` 
+
+
 
 Install and configure moodle on your system.
 
