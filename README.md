@@ -2,8 +2,8 @@
 ## Prequisites
 - Virtualbox installed Ubuntu Linux machine (Preferrably Ubuntu 22.04 Desktop) having at least 16GB Ram, 250GB Disk
 - Familiarity with Linux environments and commands
-- 
-## [Vagrant Installation]
+
+## Vagrant Installation
 In our Ubuntu machine (not the control node), run the following commands to instal & check the vagrant version.
 ```
 sudo apt install vagrant
