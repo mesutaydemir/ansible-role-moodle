@@ -1,10 +1,49 @@
-# Create control and host machines. All machines will be Ubuntu 22.04 with 1GB Ram, 2 Core CPUs and 40 GB Disk.
+
 ## [Vagrant Installation]
 In our Ubuntu machine (not the control node), run the following commands to instal & check the vagrant version.
 ```
 sudo apt install vagrant
 vagrant --v
 ```
+### Preparing Vagrant File
+Next, we'll use the following Vagrant file to create control and host machines. All machines will be Ubuntu 22.04 with 1GB Ram, 2 Core CPUs and 40 GB Disk.
+
+```
+mkdir ~/Desktop/vagrant
+vim Vagrantfile
+```
+Copy and paste the following contents into this file and then save and exit:
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/ubuntu2204"
+  config.vm.box_version = "4.2.12"
+
+  config.vm.define "control", primary: true do |control|
+    control.vm.hostname = "control"
+
+    control.vm.network "private_network", ip: "192.168.56.10"
+
+    control.vm.provision "shell", inline: <<-SHELL
+      apt update > /dev/null 2>&1 && apt install -y python3.8-venv sshpass > /dev/null 2>&1
+    SHELL
+  end
+
+  (0..2).each do |i|
+    config.vm.define "host#{i}" do |node|
+      node.vm.hostname = "host#{i}"
+
+      node.vm.network "private_network", ip: "192.168.56.#{i+20}"
+
+      node.vm.provision "shell", inline: <<-SHELL
+        sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+        systemctl restart sshd.service
+      SHELL
+    end
+  end
+end
+```
+
+
 ### Vagrant Komutları
 ```ruby
 vagrant status ==> tüm makinelerin durumunu kontrol etmek için kullanılır.
